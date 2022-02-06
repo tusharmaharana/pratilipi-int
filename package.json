@@ -1,0 +1,31 @@
+{
+  "name": "pratilipi-int",
+  "version": "1.0.0",
+  "repository": "https://github.com/tusharmaharana/pratilipi-int.git",
+  "author": "Tushar Maharana <47114550+tusharmaharana@users.noreply.github.com>",
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "scripts": {},
+  "devDependencies": {
+    "eslint": "7.31.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.3",
+    "prettier": "^2.5.1"
+  }
+}
