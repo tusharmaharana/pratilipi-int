@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
 import { Content } from '../models/Content';
-import { findOneQuery, findQuery, updateOneQuery } from '../utils/generalQueries';
+import { findOneAndUpdateQuery, findOneQuery, findQuery } from '../utils/generalQueries';
 
 export const router = Router();
 
@@ -53,13 +53,14 @@ router.post('/:id/likes', async (req: ContentLikeReq, res: ContentLikeRes): Prom
     const record = await findOneQuery(Content, { _id });
     if (!record) res.status(404).send({ message: 'content not found' });
 
+    let updatedRecord: Object;
     if (action === 'like') {
-      await updateOneQuery(Content, { _id }, { likes: +record.likes + 1 });
+      updatedRecord = await findOneAndUpdateQuery(Content, { _id }, { likes: +record.likes + 1 }, { new: true });
     } else {
-      await updateOneQuery(Content, { _id }, { likes: +record.likes - 1 });
+      updatedRecord = await findOneAndUpdateQuery(Content, { _id }, { likes: +record.likes - 1 }, { new: true });
     }
 
-    res.status(200);
+    res.status(200).send(updatedRecord);
   } catch (error) {
     console.log(error);
     res.status(400).send({ message: 'Something went wrong' });
