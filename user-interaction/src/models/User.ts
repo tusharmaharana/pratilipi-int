@@ -7,7 +7,7 @@ export const User = model(
     password: {
       type: String,
       minlength: 10,
-      match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/,
+      match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&./_#%^&()|'";:?><])[A-Za-z\d@$!%*?&./_#%^&()|'";:><?]{10,}$/,
       required: true
     }
   })
