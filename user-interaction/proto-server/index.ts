@@ -78,6 +78,7 @@ const getServer = () => {
           name: 'Server Error',
           message: `Something went wrong`
         };
+        console.log(err);
         res(error, null);
         return;
       }

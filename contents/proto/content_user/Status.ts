@@ -17,5 +17,5 @@ export enum Status {
   INTERNAL = 13,
   UNAVAILABLE = 14,
   DATA_LOSS = 15,
-  UNAUTHENTICATED = 16
+  UNAUTHENTICATED = 16,
 }
