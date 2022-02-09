@@ -36,7 +36,7 @@ router.get('/top', async (req: Request, res: TopContentRes): Promise<TopContentR
  * Types
  */
 type ContentLikeReq = Request<{ id: Types.ObjectId }, null, Liked>;
-type ContentLikeRes = Response<Object | Message>;
+type ContentLikeRes = Response<Record<string, unknown> | Message>;
 interface Liked {
   action: 'like' | 'unlike';
 }
@@ -53,7 +53,7 @@ router.post('/:id/likes', async (req: ContentLikeReq, res: ContentLikeRes): Prom
     const record = await findOneQuery(Content, { _id });
     if (!record) res.status(404).send({ message: 'content not found' });
 
-    let updatedRecord: Object;
+    let updatedRecord: Record<string, unknown>;
     if (action === 'like') {
       updatedRecord = await findOneAndUpdateQuery(Content, { _id }, { likes: +record.likes + 1 }, { new: true });
     } else {

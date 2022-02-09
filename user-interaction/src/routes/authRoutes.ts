@@ -3,6 +3,7 @@ import { Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
 import * as Yup from 'yup';
 import { User } from '../models/User';
+import { omitWrapper } from '../utils/commonHelpers';
 import { findOneQuery, saveQuery } from '../utils/generalQueries';
 
 export const router = Router();
@@ -35,9 +36,11 @@ router.post('/signUp', async (req: SignUpReq, res: SignUpRes): Promise<SignUpRes
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(user.password, salt);
 
-      const userDoc = await saveQuery(user);
+      let userDoc = await saveQuery(user);
+      userDoc = omitWrapper(userDoc, ['password', '__v']);
 
-      // req.user = userDoc;
+      //@ts-expect-error
+      req.user = userDoc;
       //@ts-expect-error
       return res.status(200).send({ userId: userDoc._id });
     }

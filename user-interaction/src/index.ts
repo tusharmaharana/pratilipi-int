@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { authRoutes, likeRoutes } from './routes';
+import { authRoutes } from './routes';
 
 const app = express();
 
@@ -19,4 +19,3 @@ mongoose
   .catch(err => console.log('Error while connecting to MongoDB', err));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/likes', likeRoutes);
