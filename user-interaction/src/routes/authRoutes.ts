@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
 import * as Yup from 'yup';

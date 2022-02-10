@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  user_api:
+    build:
+      context: ./user-interaction
+      dockerfile: Dockerfile
+    ports:
+      - '4000:4000'
+      - '5001:5001'
+    environment:
+      DB_URI: mongodb://mongo_db:27017/user-interaction
+    volumes:
+      - .:/usr/user_api/
+      - /usr/user_api/node_modules
+    depends_on:
+      - mongo_db
+  mongo_db:
+    image: mongo:latest
+    container_name: db_container
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
