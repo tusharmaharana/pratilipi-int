@@ -20,6 +20,7 @@
   "scripts": {
     "proto:gen": "sh proto-gen.sh",
     "dev": "nodemon src/index.ts",
-    "dev:grpc:client": "nodemon src/gateway/contentService.ts"
+    "dev:grpc:content": "nodemon src/gateway/contentService.ts",
+    "dev:grpc:user": "nodemon src/gateway/userInteractionService.ts"
   }
 }
