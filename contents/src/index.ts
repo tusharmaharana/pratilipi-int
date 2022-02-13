@@ -27,12 +27,8 @@ app.post('/test', upload.single('File'), (req, res) => {
   const data = Papa.parse(req.file.buffer.toString(), {
     header: true,
     skipEmptyLines: true,
-    dynamicTyping: true,
-    complete: function (results) {
-      console.log(results);
-      return results;
-    }
+    dynamicTyping: true
   });
 
-  res.send(data);
+  res.send(data.data);
 });
