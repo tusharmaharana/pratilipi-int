@@ -2,10 +2,10 @@
 
 import type { Content as _client_content_Content, Content__Output as _client_content_Content__Output } from '../client_content/Content';
 
-export interface TopContentResponse {
-  'topContents'?: (_client_content_Content | null);
+export interface LikeResponse {
+  'content'?: (_client_content_Content | null);
 }
 
-export interface TopContentResponse__Output {
-  'topContents'?: (_client_content_Content__Output);
+export interface LikeResponse__Output {
+  'content'?: (_client_content_Content__Output);
 }

@@ -2,7 +2,7 @@ import { Server, ServerCredentials } from '@grpc/grpc-js';
 import mongoose from 'mongoose';
 import { clientToContentMethods, client_content } from './clientToContentMethods';
 
-const PORT = 4001;
+const PORT = 8080;
 const server = new Server();
 
 mongoose

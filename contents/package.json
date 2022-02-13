@@ -27,7 +27,8 @@
   },
   "scripts": {
     "proto:gen": "sh proto/build.sh",
-    "dev:grpc": "sh proto/build.sh && nodemon proto-client/index.ts",
+    "dev:grpc:client": "nodemon proto-client/index.ts",
+    "dev:grpc:server": "nodemon -r dotenv/config proto-server/index.ts",
     "dev:service": "nodemon -r dotenv/config src/index.ts"
   }
 }

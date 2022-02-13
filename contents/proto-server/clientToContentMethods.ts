@@ -20,27 +20,23 @@ export const clientToContentMethods = (): CLientToContentHandlers => {
   return {
     TopContents: async call => {
       try {
-        const allContents = await findQuery(Content, {
+        const topContents = await findQuery(Content, {
           sortOrder: -1,
           sortKey: 'likes'
         });
 
-        if (allContents.length === 0) {
-          const error = {
-            code: status.NOT_FOUND,
-            message: 'No Content Found'
-          };
-          call.emit('Error', error);
+        if (topContents.length === 0) {
+          call.end();
           return;
         }
 
-        allContents.forEach(content => {
-          call.write(content);
+        topContents.forEach(content => {
+          call.write({ topContents: content });
         });
         call.end();
       } catch (error) {
         console.log(error);
-        call.emit('Error', error);
+        call.end();
       }
     },
 
