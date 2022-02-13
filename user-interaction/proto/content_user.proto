@@ -39,7 +39,7 @@ message UpdateLikeResponse{
     Status code=1;
 }
 
-service Users {
+service ContentToUser {
     rpc ValidateUser(UserValidationRequest) returns (UserValidationResponse) {};
     rpc SetLikes(UpdateLikeRequest) returns (UpdateLikeResponse) {};
 } 

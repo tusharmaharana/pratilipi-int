@@ -1,10 +1,20 @@
-import { UsersHandlers } from '../proto/content_user/Users';
+import { loadPackageDefinition } from '@grpc/grpc-js';
+import { loadSync } from '@grpc/proto-loader';
+import path from 'path';
+import { ProtoGrpcType } from '../proto/content_user';
+import { ContentToUserHandlers } from '../proto/content_user/ContentToUser';
 import { Like } from '../src/models/Like';
 import { User } from '../src/models/User';
 import { isNotEmptyObject } from '../src/utils/commonHelpers';
 import { createDocumentQuery, findOneAndDeleteQuery, findOneQuery } from '../src/utils/generalQueries';
 
-const contentToUserMethods = (): UsersHandlers => {
+const PROTO_FILE = '../proto/content_user.proto';
+
+const contentPackageDef = loadSync(path.resolve(__dirname, PROTO_FILE));
+const contentGrpcObj = loadPackageDefinition(contentPackageDef) as unknown as ProtoGrpcType;
+export const content_user = contentGrpcObj.content_user;
+
+export const contentToUserMethods = (): ContentToUserHandlers => {
   return {
     ValidateUser: async (req, res) => {
       const userId = req.request.id;
@@ -54,5 +64,3 @@ const contentToUserMethods = (): UsersHandlers => {
     }
   };
 };
-
-export default contentToUserMethods;
