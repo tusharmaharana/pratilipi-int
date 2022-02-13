@@ -1,6 +1,7 @@
 import { loadPackageDefinition, sendUnaryData, ServerUnaryCall, status } from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
 import path from 'path';
+import { client } from '../proto-client';
 // import * as Yup from 'yup';
 import { ProtoGrpcType } from '../proto/client_content';
 import { CLientToContentHandlers } from '../proto/client_content/CLientToContent';
@@ -19,30 +20,85 @@ export const client_content = clientGrpcObj.client_content;
 export const clientToContentMethods = (): CLientToContentHandlers => {
   return {
     TopContents: async call => {
-      try {
-        const topContents = await findQuery(Content, {
-          sortOrder: -1,
-          sortKey: 'likes'
-        });
-
-        if (topContents.length === 0) {
-          call.end();
+      const val = call.metadata.get('userid');
+      client.ValidateUser({ id: val[0] as string }, async (err, result) => {
+        if (err) {
+          console.error(err);
           return;
         }
+        if (result.code === 0) {
+          try {
+            const topContents = await findQuery(Content, {
+              sortOrder: -1,
+              sortKey: 'likes'
+            });
 
-        topContents.forEach(content => {
-          call.write({ topContents: content });
-        });
-        call.end();
-      } catch (error) {
-        console.log(error);
-        call.end();
-      }
+            if (topContents.length === 0) {
+              call.end();
+              return;
+            }
+
+            topContents.forEach(content => {
+              call.write({ topContents: content });
+            });
+            call.end();
+          } catch (error) {
+            console.log(error);
+            call.end();
+          }
+        }
+      });
     },
 
-    LikeContent: async (call, callback) => await updateLike(call, callback, 'Like'),
+    LikeContent: async (call, callback) => {
+      const val = call.metadata.get('userid');
+      client.ValidateUser({ id: val[0] as string }, async (err, result) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        if (result.code === 0) {
+          client.SetLikes({ userId: val[0] as string, contentId: call.request.contentId }, async (err, result) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            if (result.code === 0) {
+              try {
+                await updateLike(call, callback, 'Like');
+              } catch (err) {
+                console.log(err);
+              }
+            }
+          });
+        }
+      });
+    },
 
-    UnLikeContent: async (call, callback) => await updateLike(call, callback, 'UnLike')
+    UnLikeContent: async (call, callback) => {
+      const val = call.metadata.get('userid');
+      client.ValidateUser({ id: val[0] as string }, async (err, result) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        if (result.code === 0) {
+          client.SetLikes({ userId: val[0] as string, contentId: call.request.contentId }, async (err, result) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            if (result.code === 0) {
+              try {
+                await updateLike(call, callback, 'UnLike');
+              } catch (err) {
+                console.log(err);
+              }
+            }
+          });
+        }
+      });
+    }
   };
 };
 
@@ -74,8 +130,7 @@ const updateLike = async (
       { likes },
       { new: true }
     );
-    console.log(updatedRecord);
-    callback(null, updatedRecord);
+    callback(null, { content: updatedRecord });
   } catch (error) {
     console.log(error);
     callback(error, null);

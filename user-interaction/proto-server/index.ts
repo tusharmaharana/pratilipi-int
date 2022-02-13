@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { clientToUserMethods, client_user } from './clientToUserMethods';
 import { contentToUserMethods, content_user } from './contentToUserMethods';
 
-const PORT = 4000;
+const PORT = 9000;
 const server = new Server();
 
 mongoose

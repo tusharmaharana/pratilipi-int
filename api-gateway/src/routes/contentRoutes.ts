@@ -1,8 +1,18 @@
+import { Metadata } from '@grpc/grpc-js';
 import { Request, Response, Router } from 'express';
 import { clientContent } from '../gateway/contentService';
 import { Content__Output } from '../proto-generated/client_content/Content';
+import { LikeRequest } from '../proto-generated/client_content/LikeRequest';
 
 export const router = Router();
+
+//@ts-ignore
+const setMetadata = (req): Metadata => {
+  const { headers } = req;
+  const metadata = new Metadata();
+  metadata.add('userid', headers?.userid);
+  return metadata;
+};
 
 /**
  * Types
@@ -18,9 +28,12 @@ type Message = {
  */
 
 router.get('/top', async (req: Request, res: TopContentRes): Promise<TopContentRes | void> => {
+  const metadata = setMetadata(req);
+
   const topContents: Content__Output[] = [];
+
   try {
-    const stream = clientContent.TopContents({});
+    const stream = clientContent.TopContents({}, metadata);
 
     stream.on('data', chunk => {
       topContents.push(chunk.topContents);
@@ -39,41 +52,50 @@ router.get('/top', async (req: Request, res: TopContentRes): Promise<TopContentR
 /**
  * Types
  */
-// type ContentLikeReq = Request<{ id: Types.ObjectId }, null, Liked>;
-// type ContentLikeRes = Response<Record<string, unknown> | Message>;
-// interface Liked {
-//   action: 'like' | 'unlike';
-// }
+type ContentLikeReq = Request<{ id: LikeRequest }, null, Liked>;
+type ContentLikeRes = Response<Content__Output | Message>;
+interface Liked {
+  action: 'like' | 'unlike';
+}
 
 /**
  * Update likes Handler
  */
 
-// router.post(
-//   '/:id/likes',
-//   validateUser(),
-//   //@ts-expect-error
-//   async (req: ContentLikeReq, res: ContentLikeRes, next: NextFunction): Promise<ContentLikeRes | void> => {
-//     try {
-//       const { id: _id } = req.params;
-//       const { action } = req.body;
+router.get('/:id/like', async (req: ContentLikeReq, res: ContentLikeRes): Promise<ContentLikeRes | void> => {
+  const metadata = setMetadata(req);
+  const { id } = req.params;
+  try {
+    clientContent.LikeContent({ contentId: id as unknown as string }, metadata, (err, result) => {
+      if (err) {
+        console.log('api-gateway', err);
+        return;
+      }
+      console.log(result);
+      res.status(200).send(result?.content);
+    });
+    // res.status(500).send({ message: 'Internal Service Error' });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ message: 'Something went wrong' });
+  }
+});
 
-//       const record = await findOneQuery(Content, { _id });
-//       if (!record) res.status(404).send({ message: 'content not found' });
-
-//       let updatedRecord: Record<string, unknown>;
-//       if (action === 'like') {
-//         updatedRecord = await findOneAndUpdateQuery(Content, { _id }, { likes: +record.likes + 1 }, { new: true });
-//       } else {
-//         updatedRecord = await findOneAndUpdateQuery(Content, { _id }, { likes: +record.likes - 1 }, { new: true });
-//       }
-
-//       res.status(200).send(updatedRecord);
-//       next();
-//     } catch (error) {
-//       console.log(error);
-//       res.status(400).send({ message: 'Something went wrong' });
-//     }
-//   },
-//   setLikes
-// );
+router.get('/:id/unlike', async (req: ContentLikeReq, res: ContentLikeRes): Promise<ContentLikeRes | void> => {
+  const metadata = setMetadata(req);
+  const { id } = req.params;
+  try {
+    clientContent.UnLikeContent({ contentId: id as unknown as string }, metadata, (err, result) => {
+      if (err) {
+        console.log('api-gateway', err);
+        return;
+      }
+      console.log(result);
+      res.status(200).send(result?.content);
+    });
+    // res.status(500).send({ message: 'Internal Service Error' });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ message: 'Something went wrong' });
+  }
+});

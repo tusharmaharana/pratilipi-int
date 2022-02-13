@@ -18,6 +18,9 @@ export const contentToUserMethods = (): ContentToUserHandlers => {
   return {
     ValidateUser: async (req, res) => {
       const userId = req.request.id;
+      // const id = JSON.parse(userId);
+      if (userId.match(/^[0-9a-fA-F]{24}$/)) console.log(userId);
+      else console.log(false);
       try {
         const existingUser = await findOneQuery(User, { _id: userId });
         if (!isNotEmptyObject(existingUser)) {
@@ -44,9 +47,10 @@ export const contentToUserMethods = (): ContentToUserHandlers => {
     SetLikes: async (req, res) => {
       const userId = req.request.userId;
       const contentId = req.request.contentId;
+      console.log(userId, contentId);
 
       const params = { contentId, userId };
-      let record: Record<string, unknown>;
+      let record: Record<string, unknown> = await findOneQuery(Like, params);
       try {
         record = record ? await findOneAndDeleteQuery(Like, params) : await createDocumentQuery(Like, params);
 

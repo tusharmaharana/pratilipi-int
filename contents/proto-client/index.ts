@@ -3,7 +3,7 @@ import { loadSync } from '@grpc/proto-loader';
 import path from 'path';
 import { ProtoGrpcType } from '../proto/content_user';
 
-const PORT = 4000;
+const PORT = 9000;
 const PROTO_FILE = '../proto/content_user.proto';
 
 const packageDef = loadSync(path.resolve(__dirname, PROTO_FILE));
