@@ -62,3 +62,11 @@ export const updateOneQuery = async <T>(
 
   return data as unknown as Record<string, unknown>;
 };
+
+export const createDocumentQuery = async <T>(
+  Model: TModel<T>,
+  params: FilterQuery<T>
+): Promise<Record<string, unknown>> => {
+  const data = await Model.create(params);
+  return isNotEmptyObject(data as unknown as Record<string, unknown>) ? data.toObject() : null;
+};

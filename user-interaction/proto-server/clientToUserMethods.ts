@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import { ProtoGrpcType } from '../proto/client_user';
 import { ClientToUserHandlers } from '../proto/client_user/ClientToUser';
 import { User } from '../src/models/User';
-import { omitWrapper } from '../src/utils/commonHelpers';
 import { findOneQuery, saveQuery } from '../src/utils/generalQueries';
 
 const PROTO_FILE = '../proto/client_user.proto';
@@ -37,7 +36,6 @@ export const clientToUserMethods = (): ClientToUserHandlers => {
         user.password = await bcrypt.hash(user.password, salt);
 
         let userDoc = await saveQuery(user);
-        userDoc = omitWrapper(userDoc, ['password', '__v']);
 
         callback(null, { userId: userDoc._id as string });
       } catch (error) {

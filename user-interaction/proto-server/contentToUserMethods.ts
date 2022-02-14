@@ -1,12 +1,13 @@
 import { loadPackageDefinition } from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
+import bcrypt from 'bcryptjs';
 import path from 'path';
 import { ProtoGrpcType } from '../proto/content_user';
 import { ContentToUserHandlers } from '../proto/content_user/ContentToUser';
 import { Like } from '../src/models/Like';
 import { User } from '../src/models/User';
 import { isNotEmptyObject } from '../src/utils/commonHelpers';
-import { createDocumentQuery, findOneAndDeleteQuery, findOneQuery } from '../src/utils/generalQueries';
+import { createDocumentQuery, findOneAndDeleteQuery, findOneQuery, saveQuery } from '../src/utils/generalQueries';
 
 const PROTO_FILE = '../proto/content_user.proto';
 
@@ -16,8 +17,8 @@ export const content_user = contentGrpcObj.content_user;
 
 export const contentToUserMethods = (): ContentToUserHandlers => {
   return {
-    ValidateUser: async (req, res) => {
-      const userId = req.request.id;
+    ValidateUser: async (call, callback) => {
+      const userId = call.request.id;
       // const id = JSON.parse(userId);
       if (userId.match(/^[0-9a-fA-F]{24}$/)) console.log(userId);
       else console.log(false);
@@ -29,24 +30,24 @@ export const contentToUserMethods = (): ContentToUserHandlers => {
             name: 'Not Found',
             message: `User with ID ${userId} does not exist.`
           };
-          res(error, null);
+          callback(error, null);
           return;
         }
-        res(null, { code: 'OK' });
+        callback(null, { code: 'OK' });
       } catch (err) {
         const error = {
           code: 7,
           name: 'Denied',
           message: `Permission is Denied`
         };
-        res(error, null);
+        callback(error, null);
         console.error(err);
       }
     },
 
-    SetLikes: async (req, res) => {
-      const userId = req.request.userId;
-      const contentId = req.request.contentId;
+    SetLikes: async (call, callback) => {
+      const userId = call.request.userId;
+      const contentId = call.request.contentId;
       console.log(userId, contentId);
 
       const params = { contentId, userId };
@@ -54,7 +55,7 @@ export const contentToUserMethods = (): ContentToUserHandlers => {
       try {
         record = record ? await findOneAndDeleteQuery(Like, params) : await createDocumentQuery(Like, params);
 
-        res(null, { code: 'OK' });
+        callback(null, { code: 'OK' });
       } catch (err) {
         const error = {
           code: 13,
@@ -62,8 +63,21 @@ export const contentToUserMethods = (): ContentToUserHandlers => {
           message: `Something went wrong`
         };
         console.log(err);
-        res(error, null);
+        callback(error, null);
         return;
+      }
+    },
+    UpdateUserDB: async (call, callback) => {
+      try {
+        const user = new User(call.request);
+
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+
+        await saveQuery(user);
+      } catch (error) {
+        console.log(error);
+        callback(error, null);
       }
     }
   };

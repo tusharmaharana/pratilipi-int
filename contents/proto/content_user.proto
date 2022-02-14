@@ -39,7 +39,17 @@ message UpdateLikeResponse{
     Status code=1;
 }
 
+message UpdateDBRequest{
+    string email=1;
+    string password=2;
+}
+
+message UpdateDBResponse{
+    Status code=1;
+}
+
 service ContentToUser {
     rpc ValidateUser(UserValidationRequest) returns (UserValidationResponse) {};
     rpc SetLikes(UpdateLikeRequest) returns (UpdateLikeResponse) {};
+    rpc UpdateUserDB (UpdateDBRequest) returns (UpdateDBResponse){};
 } 

@@ -39,3 +39,9 @@ export const generateId = ({ length, isNumeric = true }: { length: number; isNum
 };
 
 export const MongoIdType = (id: string): Types.ObjectId => new Types.ObjectId(id);
+
+export const toLowerCase = (data: Array<Object>) => {
+  const lowerCase = (str: string) => str[0].toLowerCase() + str.slice(1);
+  const res = data.map((obj: Object) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [lowerCase(k), v])));
+  return res;
+};

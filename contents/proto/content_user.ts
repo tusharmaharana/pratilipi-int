@@ -11,6 +11,8 @@ export interface ProtoGrpcType {
   content_user: {
     ContentToUser: SubtypeConstructor<typeof grpc.Client, _content_user_ContentToUserClient> & { service: _content_user_ContentToUserDefinition }
     Status: EnumTypeDefinition
+    UpdateDBRequest: MessageTypeDefinition
+    UpdateDBResponse: MessageTypeDefinition
     UpdateLikeRequest: MessageTypeDefinition
     UpdateLikeResponse: MessageTypeDefinition
     UserValidationRequest: MessageTypeDefinition
