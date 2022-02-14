@@ -2,6 +2,13 @@ syntax = "proto3";
 
 package client_content;
 
+enum Status {
+    PENDING = 0;
+    IN_PROGRESS = 1;
+    SUCCESS = 2;
+    FAILED = 3;
+  }
+
 message Content{
     string _id=1;
     string title=2;
@@ -27,8 +34,22 @@ message LikeResponse{
     Content content=1;
 }
 
+message FileUploadRequest {
+    bytes chunkBuffer = 1;
+
+}
+
+message FileUploadResponse {
+    Status status = 1;
+}
+
+
 service CLientToContent {
     rpc TopContents (TopContentRequest) returns (stream TopContentResponse) {};
     rpc LikeContent (LikeRequest) returns (LikeResponse);
     rpc UnLikeContent (LikeRequest) returns (LikeResponse);
 } 
+
+service FileService {
+    rpc Upload(stream FileUploadRequest) returns(FileUploadResponse);
+  }

@@ -12,3 +12,4 @@ export const clientContent = new grpcObj.client_content.CLientToContent(
   `0.0.0.0:${PORT}`,
   credentials.createInsecure()
 );
+export const fileServiceStub = new grpcObj.client_content.FileService(`0.0.0.0:${PORT}`, credentials.createInsecure());

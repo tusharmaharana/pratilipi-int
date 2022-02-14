@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import { fileServiceStub } from './gateway/contentService';
 import { authRoutes, contentRoutes } from './routes';
 const app = express();
 const upload = multer();
@@ -7,19 +8,35 @@ const upload = multer();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use('/api/content', contentRoutes);
 app.use('/api/user/auth', authRoutes);
-app.post('api/content/test', upload.single('File'), (req, res) => {
-  console.log(req.file);
-  // fs.readFile(req.file, 'utf-8', (err, data) => console.log(data));
-  //   const data = Papa.parse(req.file.buffer.toString(), {
-  //     header: true,
-  //     skipEmptyLines: true,
-  //     dynamicTyping: true
-  //   });
+app.post('/api/test', upload.single('File'), (req, res) => {
+  const fileBuffer = req.file?.buffer;
+  console.log(req.file?.buffer);
+  const length = fileBuffer?.length;
+  if (length) {
+    const stream = fileServiceStub.Upload((err, response) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(response);
+    });
 
-  //   res.send(data.data);
-  res.send(req.file);
+    const view = new Uint8Array(fileBuffer);
+    let buf: Buffer;
+
+    //will only stream 4Kb per request to the server
+    for (let i = 0; i < view.length; i += 4096) {
+      if (i + 4096 < view.length) buf = fileBuffer?.slice(i, i + 4096);
+      else buf = fileBuffer?.slice(i);
+      stream.write({ chunkBuffer: buf });
+    }
+
+    stream.end();
+  }
+
+  res.status(200).send();
 });
+app.use('/api/content', contentRoutes);
 
 app.listen(5000, () => console.log('Server is running at port 5000'));

@@ -2,7 +2,6 @@ import { loadPackageDefinition, sendUnaryData, ServerUnaryCall, status } from '@
 import { loadSync } from '@grpc/proto-loader';
 import path from 'path';
 import { client } from '../proto-client';
-// import * as Yup from 'yup';
 import { ProtoGrpcType } from '../proto/client_content';
 import { CLientToContentHandlers } from '../proto/client_content/CLientToContent';
 import { LikeRequest__Output } from '../proto/client_content/LikeRequest';
@@ -13,7 +12,13 @@ import { findOneAndUpdateQuery, findOneQuery, findQuery } from '../src/utils/gen
 
 const PROTO_FILE = '../proto/client_content.proto';
 
-const clientPackageDef = loadSync(path.resolve(__dirname, PROTO_FILE));
+const clientPackageDef = loadSync(path.resolve(__dirname, PROTO_FILE), {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
 const clientGrpcObj = loadPackageDefinition(clientPackageDef) as unknown as ProtoGrpcType;
 export const client_content = clientGrpcObj.client_content;
 
@@ -136,14 +141,3 @@ const updateLike = async (
     callback(error, null);
   }
 };
-
-// const SignUpSchema = Yup.object()
-//   .strict(true)
-//   .noUnknown()
-//   .shape({
-//     email: Yup.string().email('Invalid Email!').required('Required'),
-//     password: Yup.string()
-//       .min(10, 'Too Short!')
-//       .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/, 'password is not valid')
-//       .required('Required')
-//   });

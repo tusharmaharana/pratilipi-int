@@ -1,6 +1,7 @@
 import { Server, ServerCredentials } from '@grpc/grpc-js';
 import mongoose from 'mongoose';
 import { clientToContentMethods, client_content } from './clientToContentMethods';
+import { fileServiceMethods } from './fileServiceMethods';
 
 const PORT = 9001;
 const server = new Server();
@@ -20,3 +21,4 @@ mongoose
   .catch(err => console.log('Error while connecting to MongoDB', err));
 
 server.addService(client_content.CLientToContent.service, clientToContentMethods());
+server.addService(client_content.FileService.service, fileServiceMethods());
