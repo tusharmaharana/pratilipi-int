@@ -47,15 +47,18 @@ const updateContentDB = async (obj: Record<string, TestContent>) => {
     console.log(error);
   }
 };
-const UpdateUserDB = (obj: Record<string, TestContent>): UpdateDBResponse__Output | void => {
+const UpdateUserDB = (obj: Record<string, TestContent>) => {
   const { email, password } = pickWrapper(obj, ['email', 'password']);
-  client.UpdateUserDB({ email: email as string, password: password as string }, (err, result) => {
-    if (err) {
-      console.log(err);
-      return;
+  client.UpdateUserDB(
+    { email: email as string, password: password as string },
+    (err, result): UpdateDBResponse__Output | void => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      return result;
     }
-    return result;
-  });
+  );
 };
 
 interface TestContent {
