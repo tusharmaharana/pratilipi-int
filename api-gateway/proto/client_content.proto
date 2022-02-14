@@ -14,7 +14,7 @@ message Content{
     string title=2;
     string story=3;
     int32 likes=4;
-    string publishingDate=5;
+    string publishedDate=5;
     string userId=6;
 }
 

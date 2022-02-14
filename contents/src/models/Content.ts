@@ -13,7 +13,7 @@ export const Content = model(
       trim: true,
       required: true
     },
-    publishingDate: {
+    publishedDate: {
       type: Date,
       required: true
     },
