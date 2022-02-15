@@ -26,6 +26,8 @@
     "typescript": "^4.5.5"
   },
   "scripts": {
+    "start:grpc:client": "ts-node proto-client/index.ts",
+    "start:grpc:server": "ts-node proto-server/index.ts",
     "proto:gen": "sh proto/build.sh",
     "dev:grpc:client": "nodemon proto-client/index.ts",
     "dev:grpc:server": "nodemon -r dotenv/config proto-server/index.ts",

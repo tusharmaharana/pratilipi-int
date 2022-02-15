@@ -9,8 +9,9 @@ type User = {
 export const AuthProvider: React.FC = props => {
   const signUp = async (values: IFormInputs): Promise<void> => {
     try {
-      const data: User = await request('/auth/signUp', { body: values });
+      const data: User = await request('/user/auth/signUp', { body: values });
       if (!localStorage.getItem('userId')) localStorage.setItem('userId', data.userId);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

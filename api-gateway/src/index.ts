@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import multer from 'multer';
 import { fileServiceStub } from './gateway/contentService';
@@ -5,15 +6,19 @@ import { authRoutes, contentRoutes } from './routes';
 const app = express();
 const upload = multer();
 
+app.use(
+  cors({
+    origin: 'http://localhost:3000'
+  })
+);
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use('/api/user/auth', authRoutes);
 app.post('/api/test', upload.single('File'), (req, res) => {
   const fileBuffer = req.file?.buffer;
-  console.log(req.file?.buffer);
-  const length = fileBuffer?.length;
-  if (length) {
+  if (fileBuffer?.length) {
     const stream = fileServiceStub.Upload((err, response) => {
       if (err) {
         console.log(err);

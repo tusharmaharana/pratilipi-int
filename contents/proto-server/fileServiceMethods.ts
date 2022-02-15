@@ -49,6 +49,8 @@ const updateContentDB = async (obj: Record<string, TestContent>) => {
 };
 const UpdateUserDB = (obj: Record<string, TestContent>) => {
   const { email, password } = pickWrapper(obj, ['email', 'password']);
+  if ((email as string).length === 0 || (password as string).length === 0) return;
+
   client.UpdateUserDB(
     { email: email as string, password: password as string },
     (err, result): UpdateDBResponse__Output | void => {

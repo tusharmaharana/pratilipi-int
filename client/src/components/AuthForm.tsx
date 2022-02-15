@@ -26,37 +26,62 @@ export const AuthForm: React.FC = () => {
   const onSubmit = (dataInputs: IFormInputs) => actions?.signUp(dataInputs);
 
   return (
-    <StyledContainer>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <FormLabel>Enter Email Address</FormLabel>
-        <FormControl placeholder="Email" {...register('email')} />
-        <p>{errors.email?.message}</p>
+    <>
+      <StyledContainer>
+        <h1 className="mb-5">Pratilipi Project</h1>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <FormLabel>Enter Email Address</FormLabel>
+          <StyledInputDiv error={!!errors.email?.message}>
+            <FormControl placeholder="Email" {...register('email')} />
+            <StyledErrorDiv>{errors.email?.message}</StyledErrorDiv>
+          </StyledInputDiv>
 
-        <FormLabel>Enter Password</FormLabel>
-        <FormControl placeholder="Password" {...register('password')} />
-        <p>{errors.password?.message}</p>
-        <Button variant="primary" type="submit" style={{ width: '100%' }} disabled={!!Object.entries(errors).length}>
-          Sign Up
-        </Button>
-      </Form>
-    </StyledContainer>
+          <FormLabel>Enter Password</FormLabel>
+          <StyledInputDiv error={!!errors.password?.message}>
+            <FormControl placeholder="Password" {...register('password')} />
+            <StyledErrorDiv>{errors.password?.message}</StyledErrorDiv>
+          </StyledInputDiv>
+          <Button variant="primary" type="submit" style={{ width: '100%' }} disabled={!!Object.entries(errors).length}>
+            Sign Up
+          </Button>
+        </Form>
+      </StyledContainer>
+    </>
   );
 };
 
 const StyledContainer = styled(Container)`
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledInputDiv = styled.div<{ error: boolean }>`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  small {
+    max-width: 200px;
+  }
+  input {
+    border: ${props => (props.error ? '1px solid red' : '1px solid #ced4da')};
+  }
+`;
+
+const StyledErrorDiv = styled.small`
+  color: red;
+  margin: 10px 0 10px 0;
 `;
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid Email!').required('Required'),
   password: Yup.string()
+    .required('Required')
     .min(10, 'password must be 10 characters')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/,
       'password must have atleast 1 upper case letter, lower case letter, number and a special character'
     )
-    .required('Required')
 });

@@ -1,9 +1,12 @@
+//@ts-nocheck
 import styled from '@emotion/styled';
 import { faHeart as UnLike } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as Like } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import produce from 'immer';
 import React, { useContext, useState } from 'react';
 import { Accordion, AccordionContext, Card as BootCard, useAccordionButton } from 'react-bootstrap';
+import { useAuth } from '../context/AuthContext';
 import { formatDate, shortenBigNum } from '../utils/commonHelpers';
 
 interface TitleProps {
@@ -11,6 +14,7 @@ interface TitleProps {
   content: ContentProps;
 }
 interface ContentProps {
+  _id: string;
   title: string;
   story: string;
   likes: number;
@@ -39,9 +43,38 @@ const ContextAwareTitle = ({ eventKey, content }: TitleProps) => {
 };
 
 export const Card: React.FC<ContentProps> = props => {
-  const [like, setLike] = useState<boolean>(false);
+  const { _id, story, likes, publishedDate, eventKey, topContents, setTopContents } = props;
+  const { actions } = useAuth();
 
-  const { story, likes, publishedDate, eventKey } = props;
+  const [like, setLike] = useState<boolean | undefined>(undefined);
+
+  const onHandleClick = async () => {
+    try {
+      if (!like) {
+        await actions?.request(`/content/${_id}/like`, {
+          headers: { userid: localStorage.getItem('userId') as string }
+        });
+        const nextState = produce(topContents, draft => {
+          const index = draft.findIndex(item => item._id === _id);
+          draft[index].likes += 1;
+        });
+        setTopContents(nextState);
+        setLike(true);
+      } else {
+        await actions?.request(`/content/${_id}/unlike`, {
+          headers: { userid: localStorage.getItem('userId') as string }
+        });
+        const nextState = produce(topContents, draft => {
+          const index = draft.findIndex(item => item._id === _id);
+          draft[index].likes -= 1;
+        });
+        setTopContents(nextState);
+        setLike(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Accordion.Item eventKey={eventKey} className="mt-4 mb-4">
@@ -49,7 +82,7 @@ export const Card: React.FC<ContentProps> = props => {
       <Accordion.Body className="pb-1">
         <BootCard body>{story}</BootCard>
         <div className="mt-2 mb-1">
-          <div onClick={e => setLike(!like)} className="d-inline">
+          <div onClick={onHandleClick} className="d-inline">
             {like ? <StyledIcon icon={Like} /> : <StyledIcon icon={UnLike} />}
           </div>
           <span>{shortenBigNum(likes)} likes</span>
@@ -65,7 +98,3 @@ const StyledIcon = styled(FontAwesomeIcon)`
   padding-right: 1rem;
   color: #dd3434;
 `;
-
-// const StyledFooter = styled.div`
-//   padding-top: 1rem;
-// `;

@@ -1,12 +1,21 @@
 version: '3.9'
 services:
+  mongo_db:
+    image: mongo:latest
+    container_name: db_container
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data_container:/data/db
+
   user_api:
     build:
       context: ./user-interaction
       dockerfile: Dockerfile
+    command: yarn start:grpc
     ports:
-      - '4000:4000'
-      - '5001:5001'
+      - '9000:9000'
     environment:
       DB_URI: mongodb://mongo_db:27017/user-interaction
     volumes:
@@ -14,9 +23,49 @@ services:
       - /usr/user_api/node_modules
     depends_on:
       - mongo_db
-  mongo_db:
-    image: mongo:latest
-    container_name: db_container
-    restart: unless-stopped
+
+  contents_api:
+    build:
+      context: ./contents
+      dockerfile: Dockerfile
     ports:
-      - '27017:27017'
+      - '9001:9001'
+    environment:
+      DB_URI: mongodb://mongo_db:27017/contents
+    volumes:
+      - .:/usr/contents_api/
+      - /usr/contents_api/node_modules
+    depends_on:
+      - mongo_db
+      - user_api
+
+  api_gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    volumes:
+      - .:/usr/api_gateway/
+      - /usr/api_gateway/node_modules
+    depends_on:
+      - user_api
+      - contents_api
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    command: yarn start
+    ports:
+      - '3000:3000'
+    environment:
+      REACT_APP_SERVER: http://localhost:5000
+    volumes:
+      - .:/usr/frontend/
+      - /usr/frontend/node_modules
+    depends_on:
+      - api_gateway
+
+volumes:
+  mongodb_data_container:

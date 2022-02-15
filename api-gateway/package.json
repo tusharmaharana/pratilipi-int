@@ -14,6 +14,8 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.5.5",
     "@grpc/proto-loader": "^0.6.9",
+    "@types/cors": "^2.8.12",
+    "cors": "^2.8.5",
     "express": "^4.17.2",
     "multer": "^1.4.4"
   },
@@ -21,6 +23,9 @@
     "proto:gen": "sh proto-gen.sh",
     "dev": "nodemon src/index.ts",
     "dev:grpc:content": "nodemon src/gateway/contentService.ts",
-    "dev:grpc:user": "nodemon src/gateway/userInteractionService.ts"
+    "dev:grpc:user": "nodemon src/gateway/userInteractionService.ts",
+    "start": "ts-node src/index.ts",
+    "start:grpc:content": "ts-node src/gateway/contentService.ts",
+    "start:grpc:user": "ts-node src/gateway/userInteractionService.ts"
   }
 }
