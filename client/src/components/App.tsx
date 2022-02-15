@@ -1,9 +1,9 @@
 import React from 'react';
-// import { AuthForm } from './AuthForm';
+import { AuthForm } from './AuthForm';
 import { Dashboard } from './Dashboard';
 
 const App: React.FC = () => {
-  // if (!localStorage.getItem('userId')) return <AuthForm />;
+  if (!localStorage.getItem('userId')) return <AuthForm />;
   return <Dashboard />;
 };
 

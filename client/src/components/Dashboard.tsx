@@ -1,58 +1,18 @@
-import React, { useContext, useState } from 'react';
-import { Accordion, AccordionContext, Card, useAccordionButton } from 'react-bootstrap';
-
-type activeState=0|1
+import React from 'react';
+import { Accordion, Container } from 'react-bootstrap';
+import { Card } from './Card';
 
 export const Dashboard = () => {
-  const [active, setActive] = useState<activeState>(0);
-  const handleItemClick=()=>{
-    setActive(1)
-  }
   return (
-    <div>
-      <Accordion flush>
+    <Container>
+      <Accordion>
         {topContents.map((content, index) => {
-          // const order = topContents.length - length;
-          // setLength(length - 1);
-          <Card key={content._id}>
-        <Card.Header>
-          <ContextAwareTitle eventKey={index.toString()}/>
-        </Card.Header>
-        <Accordion.Collapse eventKey="0">
-          <Card.Body>Hello! I'm the body</Card.Body>
-        </Accordion.Collapse>
-      </Card>
-
-          return (
-            <Accordion.Item eventKey={index.toString()} key={content._id} onClick={handleItemClick}>
-              <Accordion.Header>{content.title}</Accordion.Header>
-              <Accordion.Body>{content.story}</Accordion.Body>>
-            </Accordion.Item>
-          );
+          return <Card key={content._id} eventKey={index.toString()} {...content} />;
         })}
       </Accordion>
-    </div>
+    </Container>
   );
 };
-
-const ContextAwareTitle=({  eventKey }) =>{
-  const { activeEventKey } = useContext(AccordionContext);
-
-  const decoratedOnClick = useAccordionButton(
-    eventKey,undefined  );
-
-  const isCurrentEventKey = activeEventKey === eventKey;
-
-  return (
-    <div>
-      {!isCurrentEventKey?<Accordion.Header>
-        {title} • {likes} Likes
-      </Accordion.Header>: <Accordion.Header>{title}</Accordion.Header>}
-
-
-    </div>
-  );
-}
 
 const topContents = [
   {
