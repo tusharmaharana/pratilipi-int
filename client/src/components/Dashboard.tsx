@@ -1,20 +1,34 @@
-//@ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Accordion, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { Card } from './Card';
 
+export interface ContentProps {
+  _id: string;
+  title: string;
+  story: string;
+  likes: number;
+  publishedDate: string;
+  userId: string;
+}
+
+type TopContentStateProps = ContentProps[];
+
 export const Dashboard = () => {
   const { actions } = useAuth();
-  const [topContents, setTopContents] = useState(undefined);
+  const [topContents, setTopContents] = useState<TopContentStateProps | undefined>(undefined);
 
   useEffect(() => {
     (async () => {
-      const data = await actions?.request('/content/top', {
-        headers: { userid: localStorage.getItem('userId') as string }
-      });
-      if (data) setTopContents(data);
-      else setTopContents(null);
+      try {
+        const data: TopContentStateProps | undefined = await actions?.request('/content/top', {
+          headers: { userid: localStorage.getItem('userId') as string }
+        });
+        setTopContents(data);
+      } catch (error) {
+        setTopContents([]);
+        console.log(error);
+      }
     })();
   }, [actions]);
 

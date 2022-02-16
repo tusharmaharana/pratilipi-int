@@ -29,7 +29,7 @@ export const fileServiceMethods = (): FileServiceHandlers => {
         const res = toLowerCase(result.data);
         res.map(entry => {
           updateContentDB(entry);
-          UpdateUserDB(entry);
+          // UpdateUserDB(entry);
         });
         callback(null, {
           status: Status.SUCCESS
@@ -49,7 +49,7 @@ const updateContentDB = async (obj: Record<string, TestContent>) => {
 };
 const UpdateUserDB = (obj: Record<string, TestContent>) => {
   const { email, password } = pickWrapper(obj, ['email', 'password']);
-  if ((email as string).length === 0 || (password as string).length === 0) return;
+  if (!(email as string) || !(password as string)) return;
 
   client.UpdateUserDB(
     { email: email as string, password: password as string },

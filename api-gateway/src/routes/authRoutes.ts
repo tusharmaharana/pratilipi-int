@@ -18,13 +18,21 @@ type Message = {
  */
 router.post('/signUp', async (req: SignUpReq, res: SignUpRes): Promise<SignUpRes | void> => {
   try {
-    clientUser.SignUp({ email: req.body.email, password: req.body.password }, (err, result) => {
+    const deadline = new Date();
+    deadline.setSeconds(deadline.getSeconds() + 5);
+    clientUser.waitForReady(deadline, err => {
       if (err) {
-        res.status(400).send({ message: `${err.details}` });
+        console.error(err);
         return;
       }
-      console.log(result);
-      res.status(200).send(result);
+      clientUser.SignUp({ email: req.body.email, password: req.body.password }, (err, result) => {
+        if (err) {
+          res.status(400).send({ message: `${err.details}` });
+          return;
+        }
+        console.log(result);
+        res.status(200).send(result);
+      });
     });
   } catch (error) {
     console.log(error);

@@ -37,7 +37,6 @@ services:
       - /usr/contents_api/node_modules
     depends_on:
       - mongo_db
-      - user_api
 
   api_gateway:
     build:
@@ -49,6 +48,7 @@ services:
       - .:/usr/api_gateway/
       - /usr/api_gateway/node_modules
     depends_on:
+      - mongo_db
       - user_api
       - contents_api
 
@@ -64,8 +64,6 @@ services:
     volumes:
       - .:/usr/frontend/
       - /usr/frontend/node_modules
-    depends_on:
-      - api_gateway
 
 volumes:
   mongodb_data_container:

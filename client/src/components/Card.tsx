@@ -1,4 +1,3 @@
-//@ts-nocheck
 import styled from '@emotion/styled';
 import { faHeart as UnLike } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as Like } from '@fortawesome/free-solid-svg-icons';
@@ -8,18 +7,16 @@ import React, { useContext, useState } from 'react';
 import { Accordion, AccordionContext, Card as BootCard, useAccordionButton } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { formatDate, shortenBigNum } from '../utils/commonHelpers';
+import { ContentProps } from './Dashboard';
 
 interface TitleProps {
   eventKey: string;
   content: ContentProps;
 }
-interface ContentProps {
-  _id: string;
-  title: string;
-  story: string;
-  likes: number;
-  publishedDate: string;
+interface CardProps extends ContentProps {
   eventKey: string;
+  topContents: ContentProps[];
+  setTopContents: React.Dispatch<React.SetStateAction<ContentProps[] | undefined>>;
 }
 
 const ContextAwareTitle = ({ eventKey, content }: TitleProps) => {
@@ -42,7 +39,7 @@ const ContextAwareTitle = ({ eventKey, content }: TitleProps) => {
   );
 };
 
-export const Card: React.FC<ContentProps> = props => {
+export const Card: React.FC<CardProps> = props => {
   const { _id, story, likes, publishedDate, eventKey, topContents, setTopContents } = props;
   const { actions } = useAuth();
 

@@ -14,6 +14,7 @@ export const AuthProvider: React.FC = props => {
       window.location.reload();
     } catch (error) {
       console.log(error);
+      console.log('nhi hua');
     }
   };
 
@@ -24,14 +25,13 @@ export const AuthProvider: React.FC = props => {
       method: body ? 'POST' : 'GET',
       ...customConfig,
       body: body ? JSON.stringify(body) : null,
-      credentials: 'include',
       headers: {
         'content-type': 'application/json',
         ...customConfig.headers
       }
     };
 
-    return window.fetch(`${process.env.REACT_APP_SERVER}/api${endpoint}`, reqConfig).then(async response => {
+    return fetch(`${process.env.REACT_APP_SERVER}/api${endpoint}`, reqConfig).then(async response => {
       const data = await response.json();
 
       if (response.status === 401) {
