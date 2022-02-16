@@ -1,3 +1,11 @@
+/**
+* Testing File Upload must be a POST Request 
+* and it should be done from some software like Postman 
+* and it should be uploaded in the Form option of the Body
+* and its name given in the Form option must be "File"
+*/
+
+
 //sign up command
 curl -XPOST -H "Content-type: application/json" -d '{"email":"tushar@gmail.com","password":"testPassword@12345"}' 'http://localhost:3000/api/user/auth/signUp'
 
