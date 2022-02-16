@@ -1,0 +1,11 @@
+//sign up command
+curl -XPOST -H "Content-type: application/json" -d '{"email":"tushar@gmail.com","password":"testPassword@12345"}' 'http://localhost:3000/api/user/auth/signUp'
+
+//likes a book content
+curl -XGET -H 'userid: kjladfhgowreoptu4' -H "Content-type: application/json" 'http://localhost:3000/api/content/djklshfgopw9e08932j/like'
+
+//unlikes a book content
+curl -XGET -H 'userid: kjladfhgowreoptu4' -H "Content-type: application/json" 'http://localhost:3000/api/content/djklshfgopw9e08932j/unlike'
+
+//get top book contents
+curl -XGET -H 'userid: kjladfhgowreoptu4' -H "Content-type: application/json" 'http://localhost:3000/api/content/top'

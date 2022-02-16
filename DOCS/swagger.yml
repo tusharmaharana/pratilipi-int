@@ -1,0 +1,174 @@
+swagger: '2.0'
+info:
+  description: API for Pratilipi Internship Project, which enables admins to upload content and allows users to view and like books
+  version: 1.0.0
+  title: Pratilipi Internship Project API
+  contact:
+    email: thetusharmaharana@gmail.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+paths:
+  /content/top:
+    get:
+      summary: fetches the top content books
+      description: You can get the top content books sorted in descending order by the likes count
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: userid
+        description: an authorization header which contains the userid of the currently logged in user
+        required: true
+        type: string
+      responses:
+        200:
+          description: top content books
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Content'
+  /content/:id/like:
+    get:
+      summary: likes the specified book content
+      description: The specified book content whose id is passed in url will get liked by the user
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: userid
+        description: an authorization header which contains the userid of the currently logged in user
+        required: true
+        type: string
+      - in: query
+        name: id
+        description: the id of the book content which will be liked
+        required: true
+        type: string
+      responses:
+        200:
+          description: book content with updated likes count
+          schema:
+            type: object
+            item:
+              $ref: '#/definitions/Content'
+  /content/:id/unlike:
+    get:
+      summary: unlikes the specified book content
+      description: The specified book content whose id is passed in url will get unliked by the user
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: userid
+        description: an authorization header which contains the userid of the currently logged in user
+        required: true
+        type: string
+      - in: query
+        name: id
+        description: the id of the book content which will be unliked
+        required: true
+        type: string
+      responses:
+        200:
+          description: book content with updated likes count
+          schema:
+            type: object
+            item:
+              $ref: '#/definitions/Content'
+  /user/auth/signUp:
+    post:
+      summary: to sign up the user into the system
+      description: User inputs their email and password and then signs up into the system
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: email
+        description: email id of the user
+        required: true
+        type: string
+      - in: body
+        name: password
+        description: password given by the user
+        required: true
+        type: string
+      responses:
+        200:
+          description: user id of the signed up user
+          schema:
+            type: object
+            item:
+              $ref: '#/definitions/UserId'
+  /test:
+    post:
+      summary: test route to upload sample content books
+      description: Admin can upload a csv file containing sample content books and store them in database
+      parameters:
+      - in: formData
+        name: file
+        description: csv file containing content books
+        required: true
+        type: file
+      responses:
+        200:
+          description: successfully uploaded content books to database
+
+definitions:
+  Content:
+    type: object
+    required:
+    - _id
+    - title
+    - story
+    - publishedDate
+    - likes
+    properties:
+      _id:
+        type: string
+        format: uuid
+        example: 620a1d51ec35196b3f73db67
+      title:
+        type: string
+        example: The Power of Habit
+      story:
+        type: string
+        example: Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s when an 
+        unknown printer took a galley of type and scrambled it to make a type specimen book. 
+        It has survived not only five centuries.
+      publishedDate:
+        type: string
+        format: date-time
+        example: 1986-12-05T00:00:00.000Z
+      likes:
+        type: number
+        example: 11
+  User:
+    required:
+    - _id
+    - email
+    - password
+    properties:
+      _id:
+        type: string
+        format: uuid
+        example: 620bc685b47a6a6416868dfc
+      email:
+        type: string
+        example: tushar@gmail.com
+      password:
+        type: string
+        example: $2a$10$2.5aKOJRCjXmlxz/p9u/Ue4E4TUciyov8C1Fdsnp9Gds0BAa.cnNK
+  UserId:
+    properties:
+      userId:
+        type: string
+        format: uuid
+        example: 620bc685b47a6a6416868dfc
+host: http://localhost:3000
+basePath: /api
+schemes:
+ - http
