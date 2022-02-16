@@ -6,4 +6,4 @@ COPY yarn.lock .
 RUN yarn install
 COPY . .
 RUN npm install -g concurrently
-CMD ["concurrently","yarn:start:grpc:content","yarn:start:grpc:user","yarn:start"]
+CMD ["concurrently","yarn:dev:grpc:user","yarn:dev:grpc:content","yarn:dev"]
