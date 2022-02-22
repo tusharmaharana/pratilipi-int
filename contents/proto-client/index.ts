@@ -8,7 +8,7 @@ const PROTO_FILE = '../proto/content_user.proto';
 
 const packageDef = loadSync(path.resolve(__dirname, PROTO_FILE));
 const grpcObj = loadPackageDefinition(packageDef) as unknown as ProtoGrpcType;
-export const client = new grpcObj.content_user.ContentToUser(`user_api:${PORT}`, credentials.createInsecure());
+export const client = new grpcObj.content_user.ContentToUser(`0.0.0.0:${PORT}`, credentials.createInsecure());
 
 // const deadline = new Date();
 // deadline.setSeconds(deadline.getSeconds() + 5);

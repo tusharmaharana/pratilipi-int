@@ -1,6 +1,8 @@
+import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { Accordion, Container } from 'react-bootstrap';
+import { Accordion, Button, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
+import { PageStateTypes } from './App';
 import { Card } from './Card';
 
 export interface ContentProps {
@@ -14,8 +16,13 @@ export interface ContentProps {
 
 type TopContentStateProps = ContentProps[];
 
-export const Dashboard = () => {
+interface FCProps {
+  setPage: React.Dispatch<React.SetStateAction<PageStateTypes | null>>;
+}
+
+export const Dashboard = ({ setPage }: FCProps) => {
   const { actions } = useAuth();
+  //@ts-ignore
   const [topContents, setTopContents] = useState<TopContentStateProps | undefined>(undefined);
 
   useEffect(() => {
@@ -33,20 +40,31 @@ export const Dashboard = () => {
   }, [actions]);
 
   return (
-    <Container>
-      <Accordion>
-        {topContents?.map((content, index) => {
-          return (
-            <Card
-              key={content._id}
-              eventKey={index.toString()}
-              {...content}
-              topContents={topContents}
-              setTopContents={setTopContents}
-            />
-          );
-        })}
-      </Accordion>
-    </Container>
+    <div>
+      <div className="d-flex justify-content-center">
+        <Button onClick={() => setPage('Editor')}>Write</Button>
+      </div>
+      <StyledContainer>
+        <Accordion>
+          {topContents?.map((content, index) => {
+            return (
+              <Card
+                key={content._id}
+                eventKey={index.toString()}
+                {...content}
+                topContents={topContents}
+                setTopContents={setTopContents}
+              />
+            );
+          })}
+        </Accordion>
+      </StyledContainer>
+    </div>
   );
 };
+
+const StyledContainer = styled(Container)`
+  @media (min-width: 992px) {
+    max-width: 45rem;
+  }
+`;

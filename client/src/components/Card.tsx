@@ -70,6 +70,7 @@ export const Card: React.FC<CardProps> = props => {
       }
     } catch (error) {
       console.log(error);
+      return <div>something went wrong</div>;
     }
   };
 

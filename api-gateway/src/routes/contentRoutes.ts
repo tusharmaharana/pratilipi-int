@@ -1,6 +1,7 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Request, Response, Router } from 'express';
 import { clientContent } from '../gateway/contentService';
+import { AddContentResponse } from '../proto-generated/client_content/AddContentResponse';
 import { Content__Output } from '../proto-generated/client_content/Content';
 import { LikeRequest } from '../proto-generated/client_content/LikeRequest';
 
@@ -26,6 +27,24 @@ type Message = {
 /**
  * Top Contents Handler
  */
+
+type AddContentRes = Response<AddContentResponse | Message>;
+
+router.post('/', async (req: Request, res: AddContentRes): Promise<AddContentRes | void> => {
+  const metadata = setMetadata(req);
+  try {
+    clientContent.AddContent({ params: req.body }, metadata, (err, data) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      res.status(200).send(data);
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ message: 'something went wrong' });
+  }
+});
 
 router.get('/top', async (req: Request, res: TopContentRes): Promise<TopContentRes | void> => {
   const metadata = setMetadata(req);

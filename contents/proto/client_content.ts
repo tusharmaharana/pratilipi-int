@@ -10,6 +10,8 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 
 export interface ProtoGrpcType {
   client_content: {
+    AddContentRequest: MessageTypeDefinition
+    AddContentResponse: MessageTypeDefinition
     CLientToContent: SubtypeConstructor<typeof grpc.Client, _client_content_CLientToContentClient> & { service: _client_content_CLientToContentDefinition }
     Content: MessageTypeDefinition
     FileService: SubtypeConstructor<typeof grpc.Client, _client_content_FileServiceClient> & { service: _client_content_FileServiceDefinition }

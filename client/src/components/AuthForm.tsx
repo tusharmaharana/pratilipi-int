@@ -5,13 +5,18 @@ import { Button, Container, Form, FormControl, FormLabel } from 'react-bootstrap
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { useAuth } from '../context/AuthContext';
+import { PageStateTypes } from './App';
 
 export interface IFormInputs {
   email: string;
   password: string;
 }
 
-export const AuthForm: React.FC = () => {
+interface FCProps {
+  setPage: React.Dispatch<React.SetStateAction<PageStateTypes | null>>;
+}
+
+export const AuthForm = ({ setPage }: FCProps) => {
   const { actions } = useAuth();
 
   const {
@@ -23,7 +28,10 @@ export const AuthForm: React.FC = () => {
     resolver: yupResolver(SignUpSchema)
   });
 
-  const onSubmit = (dataInputs: IFormInputs) => actions?.signUp(dataInputs);
+  const onSubmit = (dataInputs: IFormInputs) => {
+    actions?.signUp(dataInputs);
+    setPage('Dashboard');
+  };
 
   return (
     <>

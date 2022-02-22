@@ -35,16 +35,24 @@ message LikeResponse{
 }
 
 message FileUploadRequest {
-    bytes chunkBuffer = 1;
-
+    bytes chunkBuffer=1;
 }
 
 message FileUploadResponse {
     Status status = 1;
 }
 
+message AddContentRequest{
+    Content params=1;
+}
+
+message AddContentResponse{
+    Content newPost=1;
+}
+
 
 service CLientToContent {
+    rpc AddContent (AddContentRequest) returns (AddContentResponse){};
     rpc TopContents (TopContentRequest) returns (stream TopContentResponse) {};
     rpc LikeContent (LikeRequest) returns (LikeResponse);
     rpc UnLikeContent (LikeRequest) returns (LikeResponse);

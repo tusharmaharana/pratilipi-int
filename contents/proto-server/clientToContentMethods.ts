@@ -7,8 +7,8 @@ import { CLientToContentHandlers } from '../proto/client_content/CLientToContent
 import { LikeRequest__Output } from '../proto/client_content/LikeRequest';
 import { LikeResponse } from '../proto/client_content/LikeResponse';
 import { Content } from '../src/models/Content';
-import { isNotEmptyObject } from '../src/utils/commonHelpers';
-import { findOneAndUpdateQuery, findOneQuery, findQuery } from '../src/utils/generalQueries';
+import { isNotEmptyObject, omitWrapper } from '../src/utils/commonHelpers';
+import { createDocumentQuery, findOneAndUpdateQuery, findOneQuery, findQuery } from '../src/utils/generalQueries';
 
 const PROTO_FILE = '../proto/client_content.proto';
 
@@ -24,6 +24,27 @@ export const client_content = clientGrpcObj.client_content;
 
 export const clientToContentMethods = (): CLientToContentHandlers => {
   return {
+    AddContent: async (call, callback) => {
+      const val = call.metadata.get('userid');
+      client.ValidateUser({ id: val[0] as string }, async (err, result) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        if (result.code === 0) {
+          try {
+            const params = omitWrapper(call.request.params as unknown as Record<string, unknown>, ['_id']);
+            console.log(params);
+            const newPost = await createDocumentQuery(Content, params);
+            callback(null, { newPost });
+          } catch (error) {
+            console.log(error);
+            callback(error, null);
+          }
+        }
+      });
+    },
+
     TopContents: async call => {
       const val = call.metadata.get('userid');
       client.ValidateUser({ id: val[0] as string }, async (err, result) => {
