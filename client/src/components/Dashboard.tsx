@@ -22,7 +22,6 @@ interface FCProps {
 
 export const Dashboard = ({ setPage }: FCProps) => {
   const { actions } = useAuth();
-  //@ts-ignore
   const [topContents, setTopContents] = useState<TopContentStateProps | undefined>(undefined);
 
   useEffect(() => {
@@ -40,11 +39,13 @@ export const Dashboard = ({ setPage }: FCProps) => {
   }, [actions]);
 
   return (
-    <div>
-      <div className="d-flex justify-content-center">
+    <StyledContainer>
+      <div className="d-flex justify-content-left">
         <Button onClick={() => setPage('Editor')}>Write</Button>
       </div>
-      <StyledContainer>
+      {topContents?.length === 0 ? (
+        <h3>No Books Added Yet</h3>
+      ) : (
         <Accordion>
           {topContents?.map((content, index) => {
             return (
@@ -58,8 +59,8 @@ export const Dashboard = ({ setPage }: FCProps) => {
             );
           })}
         </Accordion>
-      </StyledContainer>
-    </div>
+      )}
+    </StyledContainer>
   );
 };
 

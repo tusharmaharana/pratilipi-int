@@ -48,7 +48,6 @@ services:
       - .:/usr/api_gateway/
       - /usr/api_gateway/node_modules
     depends_on:
-      - mongo_db
       - user_api
       - contents_api
 

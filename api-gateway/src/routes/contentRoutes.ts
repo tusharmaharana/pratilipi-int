@@ -59,8 +59,8 @@ router.get('/top', async (req: Request, res: TopContentRes): Promise<TopContentR
     });
 
     stream.on('end', () => {
-      if (topContents.length === 0) res.status(404).send({ message: 'No content is present' });
-      res.status(200).send(topContents);
+      if (topContents.length === 0) res.send({ message: 'No content is present' });
+      else res.status(200).send(topContents);
     });
   } catch (error) {
     console.log(error);
